@@ -86,6 +86,38 @@ canvas.addEventListener("mousemove", e => {
 canvas.addEventListener("mouseup", () => dragging = false);
 canvas.addEventListener("mouseleave", () => dragging = false);
 
+// Événements tactiles pour mobile
+canvas.addEventListener("touchstart", e => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  const x = touch.clientX - rect.left;
+  const y = touch.clientY - rect.top;
+  if (Math.abs(x - textX) < 150 && Math.abs(y - textY) < 50) {
+    dragging = true;
+    offsetX = x - textX;
+    offsetY = y - textY;
+  }
+});
+
+canvas.addEventListener("touchmove", e => {
+  if (!dragging) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  textX = touch.clientX - rect.left - offsetX;
+  textY = touch.clientY - rect.top - offsetY;
+  drawMeme();
+});
+
+canvas.addEventListener("touchend", () => {
+  dragging = false;
+});
+
+canvas.addEventListener("touchcancel", () => {
+  dragging = false;
+});
+
 // Télécharger le mème
 function downloadMeme() {
   if (!img.src || !textInput.value.trim()) {
